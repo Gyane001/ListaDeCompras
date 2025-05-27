@@ -6,7 +6,6 @@ const itemList = document.getElementById("item-list");
 const totalDisplay = document.getElementById("total");
 const languageSelect = document.getElementById("language-select");
 
-// Traduções
 const translations = {
     pt: {
         title: "Lista de Compras",
@@ -28,7 +27,9 @@ const translations = {
     }
 };
 
-// Adiciona item à lista
+// Carrega itens salvos ao abrir a página
+window.addEventListener("load", loadSavedItems);
+
 function addItem() {
     const name = itemName.value.trim();
     const qty = parseInt(itemQty.value);
@@ -40,21 +41,32 @@ function addItem() {
     }
 
     const totalItem = qty * price;
-    const li = document.createElement("li");
-    li.innerHTML = `
-        ${name} - ${qty} x R$ ${price.toFixed(2)} = R$ ${totalItem.toFixed(2)}
-        <span onclick="removeItem(this, ${totalItem})">×</span>
-    `;
-    itemList.appendChild(li);
 
+    const item = {
+        name,
+        qty,
+        price,
+        totalItem
+    };
+
+    appendItemToList(item);
     updateTotal(totalItem);
+    saveItem(item);
 
     itemName.value = "";
     itemQty.value = "";
     itemPrice.value = "";
 }
 
-// Atualiza o total exibido
+function appendItemToList(item) {
+    const li = document.createElement("li");
+    li.innerHTML = `
+        ${item.name} - ${item.qty} x R$ ${item.price.toFixed(2)} = R$ ${item.totalItem.toFixed(2)}
+        <span onclick="removeItem(this, ${item.totalItem}, '${item.name}')">×</span>
+    `;
+    itemList.appendChild(li);
+}
+
 function updateTotal(amount) {
     const currentTotal = parseFloat(totalDisplay.dataset.total || "0");
     const newTotal = currentTotal + amount;
@@ -63,12 +75,37 @@ function updateTotal(amount) {
     const currentLang = languageSelect.value;
     const totalText = translations[currentLang].totalLabel;
     totalDisplay.innerText = `${totalText} ${newTotal.toFixed(2).replace('.', ',')}`;
+
+    localStorage.setItem("total", newTotal);
 }
 
-// Remove item da lista e subtrai do total
-function removeItem(element, amount) {
+function removeItem(element, amount, itemNameToRemove) {
     element.parentElement.remove();
     updateTotal(-amount);
+    removeItemFromStorage(itemNameToRemove);
+}
+
+function saveItem(item) {
+    const items = JSON.parse(localStorage.getItem("items")) || [];
+    items.push(item);
+    localStorage.setItem("items", JSON.stringify(items));
+}
+
+function removeItemFromStorage(name) {
+    let items = JSON.parse(localStorage.getItem("items")) || [];
+    items = items.filter(item => item.name !== name);
+    localStorage.setItem("items", JSON.stringify(items));
+}
+
+function loadSavedItems() {
+    const items = JSON.parse(localStorage.getItem("items")) || [];
+    const total = parseFloat(localStorage.getItem("total") || "0");
+
+    items.forEach(item => appendItemToList(item));
+    totalDisplay.dataset.total = total;
+
+    const currentLang = languageSelect.value;
+    totalDisplay.innerText = `${translations[currentLang].totalLabel} ${total.toFixed(2).replace('.', ',')}`;
 }
 
 // Troca de idioma
@@ -76,21 +113,14 @@ languageSelect.addEventListener("change", () => {
     const lang = languageSelect.value;
     const dict = translations[lang];
 
-    // Título da aba
     document.querySelector("title").innerText = dict.title;
-
-    // Cabeçalho
     document.querySelector("[data-i18n='heading']").innerText = dict.heading;
-
-    // Botão
     document.querySelector("[data-i18n='add']").innerText = dict.add;
 
-    // Placeholder dos inputs
     itemName.placeholder = dict.item;
     itemQty.placeholder = dict.quantity;
     itemPrice.placeholder = dict.price;
 
-    // Atualiza o rótulo do total
     const total = parseFloat(totalDisplay.dataset.total || "0");
     totalDisplay.innerText = `${dict.totalLabel} ${total.toFixed(2).replace('.', ',')}`;
 });
