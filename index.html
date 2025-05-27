@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title data-i18n="title">Lista de Compras</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <select id="language-select">
+            <option value="pt">🇧🇷 Português</option>
+            <option value="en">🇺🇸 English</option>
+        </select>
+
+        <h2 data-i18n="heading">🛒 Lista de Compras 🛒</h2>
+
+        <div class="campos">
+            <input type="text" id="item-name" data-i18n-placeholder="item" placeholder="Item">
+            <input type="number" id="item-qty" data-i18n-placeholder="quantity" placeholder="Quantidade">
+            <input type="number" id="item-price" data-i18n-placeholder="price" placeholder="Preço (R$)">
+            <button onclick="addItem()" data-i18n="add">Adicionar</button>
+        </div>
+
+        <ul id="item-list"></ul>
+        <div class="total" id="total" data-total="0" data-i18n="totalLabel">
+            Total: R$ 0,00
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script src="script.js"></script>
+</body>
+
+</html>

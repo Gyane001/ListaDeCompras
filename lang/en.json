@@ -1,0 +1,9 @@
+{
+    "title": "Grocery List",
+    "heading": "🛒 Grocery List 🛒",
+    "add": "Add",
+    "totalLabel": "Total: $",
+    "item": "Item",
+    "quantity": "Quantity",
+    "price": "Price ($)"
+}
