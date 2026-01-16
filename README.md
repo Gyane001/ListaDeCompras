@@ -1,8 +1,8 @@
-# 🖨️ Lista de Compras
+# 🛒 Lista de Compras
 
 Aplicação simples para criação e gerenciamento de listas de compras, permitindo adicionar, editar e remover itens de forma prática. O projeto foca em organização, usabilidade e agilidade no controle de compras do dia a dia.
 
-Link de acesso: https://gyane001.github.io/ImpressorasBold/
+Link de acesso: [https://gyane001.github.io/ImpressorasBold/](https://gyane001.github.io/ListaDeCompras/)
 
 ---
 
